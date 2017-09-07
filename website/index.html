@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Kauppatiede - Kauppatieteet - Kauppakorkea - Pääsykoe 2016 - harjoittele netissä</title>  
+    <link rel="icon" type="image/gif" href="pictures/logoicon.png" />
+
+	<link href='https://fonts.googleapis.com/css?family=Slabo+27px' rel='stylesheet' type='text/css'>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/paasykoe.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+	<script src="js/angular.min.js"></script>
+	<script src="paasykoe.js"></script>
+	<script src="js/crypto.js"></script>
+</head>
+<body ng-app="paasykoe">
+	<div ng-controller="PaasykoeController">
+	<div src="pictures/bg.jpg" id="background" ng-class="{'background-small': mobile==true, 'background-large': mobile == false}"></div>
+	<div class="row">
+		<div class="header test col-md-2 col-sm-12"><h1>Paasykoe.fi</h1><p><em>fiksumpi tapa oppia</em></p></div>
+		<div class="col-lg-1 col-md-2"></div>
+		<div class="col-lg-6 col-md-4 col-sm-12" ng-show="!loggedIn">
+			<div class="info">
+				<p><em>Paasykoe.fi sivusto sisältää yli 1000 pääsykoeluontoista kysymystä kaikista kauppatieteellisen pääsykokeen 2017 aihealueista. Kokeile ilmaiseksi!</em></p>
+			</div>
+		</div>
+		<div class="header test col-xl-2 col-lg-3 col-md-4 col-sm-12"><a href="http://www.kauppatieteidenvalmennuskurssi.fi"><img src="pictures/porssi.png"/></a><p><em>yhteistyössä</em></p></div>
+	</div>
+
+		<div class="accountManagement" ng-show="loggedIn" ng-cloak>
+			<button class="btn btn-default btn-xs" ng-click="setTab(4); setChangePasswordMode(true)">Vaihda salasanaa</button>
+			<button class="btn btn-default btn-xs" ng-click="logout()">Kirjaudu ulos</button>
+		</div>
+
+
+		<div class="paasykoecontainer text-center" ng-show="tab==0 && !paid" ng-cloak>
+			<div class="row">
+			<div class="col-sm-4 col-xs-12 frontpagebuttons">
+			<button class="btn btn-default frontpagebutton" ng-click="setTab(1); setDemomode(true); getNewQuestion()">Kokeile</button>
+			</div><div class="col-sm-4 col-xs-12 frontpagebuttons">
+			<button class="col-sm-4 col-xs-12 btn btn-default frontpagebutton" ng-click="setTab(3); setPurchaseMode(true)">Osta</button>
+			</div><div class="col-sm-4 col-xs-12 frontpagebuttons">
+			<button class="col-sm-4 col-xs-12 btn btn-default frontpagebutton" ng-click="setTab(3)" ng-show="!loggedIn">Kirjaudu Sisään</button>
+			</div>
+			</div>
+		</div>
+
+
+		<!-- GAME -->
+		<div class="paasykoecontainer" ng-show="(tab==1 || paid) && (tab<5 && !changePasswordMode)" ng-cloak>
+			<button class="backbutton" ng-show="!paid" ng-click="setTab(0)"><span class="glyphicon glyphicon-arrow-left"></span></button>
+			<div>
+				<form>
+					<label>{{question}}</label>
+					
+					<img class="questionimage" ng-show="image" src="{{image}}"></img>
+					<div class="btn btn-default row wrap buttonmargin" ng-class="{ clicked: isSelected('a'), correct: feedbackTab === 2}" ng-click="selectAnswer('a')" ng-show="a">{{a}}</div>
+					<div class="btn btn-default row wrap buttonmargin" ng-class="{ clicked: isSelected('b'), correct: feedbackTab === 2}" ng-click="selectAnswer('b')" ng-show="b">{{b}}</div>
+					<div class="btn btn-default row wrap buttonmargin" ng-class="{ clicked: isSelected('c'), correct: feedbackTab === 2}" ng-click="selectAnswer('c')" ng-show="c">{{c}}</div>
+					<div class="btn btn-default row wrap buttonmargin" ng-class="{ clicked: isSelected('d'), correct: feedbackTab === 2}" ng-click="selectAnswer('d')" ng-show="d">{{d}}</div>
+
+					<p ng-show="feedbackTab === 1">{{explanationWrong}}</p>
+					<p ng-show="feedbackTab === 2">{{explanationCorrect}}</p>
+					<button class="btn btn-default" ng-click="getNewQuestion()" style="width:99px">Seuraava</button>
+					<button class="btn btn-default" ng-click="setTab(3); setPurchaseMode(true)" ng-show="demoMode">Osta</button>
+					<button class="btn btn-default" ng-click="setTab(5);" ng-show="!demoMode">Vaihda aihealueita</button>
+					<button class="btn btn-default" ng-click="setTab(6); getExam()" ng-show="!demoMode">Tee harjoituskoe</button>
+				</form>
+
+			</div>
+		</div>
+
+		<!-- SELECT SUBJECT -->
+		<div class="paasykoecontainer" ng-show="tab==5 && !changePasswordMode" ng-cloak>
+			<button class="backbutton" ng-click="setTab(1); getNewQuestion()" ng-show="(selectedSubjects[0] || selectedSubjects[1] || selectedSubjects[2] || selectedSubjects[3])"><span class="glyphicon glyphicon-arrow-left"></span></button>
+			<div>
+				<p ng-show="!(selectedSubjects[0] || selectedSubjects[1] || selectedSubjects[2] || selectedSubjects[3])">Valitse vähintään yksi aihealue</p>
+				<form>
+					<label>Klikkaa aihealueita vaitaksesi mistä aihepiireistä haluat kysymyksiä. Vihreä väri tarokittaa että aihe on valittu. Punainen ettet ole valinnut aihetta</label>
+					<div class="btn btn-default row wrap buttonmargin clicked" ng-class="{correct: selectedSubjects[0]}" ng-click="changeSubject(0)">Johtaminen</div>
+					<div class="btn btn-default row wrap buttonmargin clicked" ng-class="{correct: selectedSubjects[1]}" ng-click="changeSubject(1)">Laskentatoimi</div>
+					<div class="btn btn-default row wrap buttonmargin clicked" ng-class="{correct: selectedSubjects[2]}" ng-click="changeSubject(2)">Matematiikka</div>
+					<div class="btn btn-default row wrap buttonmargin clicked" ng-class="{correct: selectedSubjects[3]}" ng-click="changeSubject(3)">Taloustiede</div>
+				</form>
+
+			</div>
+		</div>
+
+		<!-- EXAM -->
+		<div class="paasykoecontainer" ng-show="tab==6" ng-cloak>
+			<button class="backbutton" ng-click="setTab(1)"><span class="glyphicon glyphicon-arrow-left"></span></button>
+			<div>
+				<form>
+					<label>OHJE: harjoituskoe sisältää 40 kysymystä: 13 kpl johtamiseta ja markkinoinnista, 13kpl laskentatoimesta, 7kpl talousmatematiikasta ja 7 kpl taloustieteestä. Oikeasta vastauksesta saat +1p, väärästä -0.5p ja tyhjästä 0p<br><br></label>
+					<div ng-repeat="question in examQuestions">
+						<label>{{question.question}}</label>
+						
+						<img class="questionimage" ng-show="question.image" src="{{question.image}}"></img>
+						<div class="btn btn-default row wrap buttonmargin exam" ng-class="{ clicked: isSelected('a', question.id), correctExam: question.correctAnswer == 'A' && (score ||score === 0)}" ng-click="selectAnswer('a', question.id)" ng-show="question.answerA">{{question.answerA}}</div>
+						<div class="btn btn-default row wrap buttonmargin exam" ng-class="{ clicked: isSelected('b', question.id), correctExam: question.correctAnswer == 'B' && (score ||score === 0)}" ng-click="selectAnswer('b', question.id)" ng-show="question.answerB">{{question.answerB}}</div>
+						<div class="btn btn-default row wrap buttonmargin exam" ng-class="{ clicked: isSelected('c', question.id), correctExam: question.correctAnswer == 'C' && (score ||score === 0)}" ng-click="selectAnswer('c', question.id)" ng-show="question.answerC">{{question.answerC}}</div>
+						<div class="btn btn-default row wrap buttonmargin exam" ng-class="{ clicked: isSelected('d', question.id), correctExam: question.correctAnswer == 'D' && (score ||score === 0)}" ng-click="selectAnswer('d', question.id)" ng-show="question.answerD">{{question.answerD}}</div>
+
+						<p ng-show="score || score === 0">{{question.explanationCorrect}}</p>
+						<br><br><br>
+					</div>
+					<button class="btn btn-default" ng-click="checkExam()">Tarkista</button>
+					<p ng-show="score || score === 0">Tuloksesi: {{score}}/40</p>
+				</form>
+
+			</div>
+		</div>
+
+		<!-- PURCHASE -->
+		<div class="paasykoecontainer" ng-show="tab==2 && !paid" ng-cloak>
+			<button class="backbutton" ng-click="setTab(0)"><span class="glyphicon glyphicon-arrow-left"></span></button>
+			<form>
+				<div class="form-group">
+				<label>Sähköpostiosoite: {{email}}</label>
+				</div>
+				<br>
+				<div class="form-group">
+					<label>Etunimi:*</label>
+					<input ng-model="client.firstName" required type="text" class="form-control" placeholder="Etunimi"></input>
+				</div><div class="form-group">
+					<label>Sukunimi:*</label>
+					<input ng-model="client.lastName" required type="text" class="form-control" placeholder="Sukunimi"></input>
+				</div><div class="form-group">
+					<label>Puhelinnumero:*</label>
+					<input ng-model="client.telephone" required type="text" class="form-control" placeholder="Puhelinnumero"></input>
+				</div><div class="form-group">
+					<label>Katuosoite:*</label>
+					<input ng-model="client.street" required class="form-control" placeholder="Katuosoite"></input>
+				</div><div class="form-group">
+					<label>Postinumero:*</label>
+					<input ng-model="client.postalCode" required type="text" class="form-control" placeholder="Postinumero"></input>
+				</div><div class="form-group">
+					<label>Postipaikkakunta:*</label>
+					<input ng-model="client.postalOffice" required type="text" class="form-control" placeholder="Postipaikkakunta"></input><br></td>
+				</div>
+				<div>
+					<input ng-model="client.terms" type="checkbox" required></input> Olen lukenut ja hyväksynyt <a href="termsandconditions.html" target="_blank">käyttöehdot</a>
+				</div>
+				<button type="submit" ng-click="createPayment(client)" class="btn btn-default">Siirry maksamaan</button>
+			</form>
+		</div>
+
+		<!-- LOGIN -->
+		<div class="paasykoecontainer" ng-show="tab==3 && !paid" ng-cloak>
+			<button class="backbutton" ng-click="setTab(0)" ng-show="!creatingAccount && !resetingPassword"><span class="glyphicon glyphicon-arrow-left"></span></button>
+			<form ng-show="!creatingAccount && !resetingPassword">		
+				<p>{{infoMessage}}</p>
+				<div class="form-group">
+					<label>Sähköposti</label>
+			    	<input type="email" class="form-control" required placeholder="Sähköposti" ng-model="loginInfo.email" required>
+				</div>
+				<div class="form-group">
+					<label>Salasana</label>
+					<input type="password" class="form-control" required placeholder="Salasana" ng-model="loginInfo.password" required>
+				</div>
+				<button ng-click="login(loginInfo)" class="btn btn-default" type="submit">Kirjaudu sisään</button>
+				<br><br>
+				<button ng-click="openCreateAccount()" class="btn btn-default" ng-show="!loggedIn">Luo uusi käyttäjä</button>
+				<button ng-click="openResetPassword()" class="btn btn-default" ng-show="!loggedIn">Unohditko salasanasi?</button>
+			</form>
+			
+			<button class="backbutton" ng-click="cancelAccountCreation()" ng-show="creatingAccount"><span class="glyphicon glyphicon-arrow-left"></span></button>
+			<form ng-show="creatingAccount">
+				<p>{{infoMessage}}</p>
+
+				<div class="form-group">
+					<label>Sähköposti</label>
+			    	<input type="email" class="form-control" required placeholder="Sähköposti" ng-model="data.email">
+				</div>
+				<div class="form-group">
+					<label>Sähköposti uudelleen</label>
+			    	<input type="email" class="form-control" required placeholder="Sähköposti uudelleen" id="noPaste" ng-model="data.emailCheck">
+				</div>
+				<div class="form-group">
+					<label>Salasana</label>
+					<input type="password" class="form-control" required placeholder="Salasana" ng-model="data.password">
+				</div>
+				<div class="form-group">
+					<label>Salasana uudelleen:</label>
+					<input type="password" class="form-control" required placeholder="Salasana uudelleen" ng-model="data.passwordCheck">
+				</div>
+				<div class="form-group">
+					<label>Vapaaehtoinen kysely, mistä kuulit palvelusta</label>
+					<select class="form-control" ng-model="data.marketingresearch" ng-init="data.marketingresearch = '-'">
+						<option value="-" ng-selected="true">En halua vastata</option>
+						<option value="google">Googlesta</option>
+						<option value="kaverilta">Kaverilta</option>
+						<option value="porssiry">Pörssi Ry:ltä</option>
+						<option value="opettaja/opo">Opettajalta/Opolta</option>
+						<option value="ilmoitustaulu">Ilmoitustaululta</option>
+						<option value="facebookista">Facebookista</option>
+						<option value="muu some">Muusta sosiaalisesta mediasta</option>
+						<option value="forum/blog">Foorumilta tai Blogista</option>
+						<option value="lehti/TV">Lehdestä tai TV:stä</option>
+						<option value="nettiuutinen">Nettiuutisesta</option>		
+						<option value="muu">Muualta</option>
+					</select>
+				</div>
+				<button class="btn btn-default" ng-click="createAccount(data)">Luo</button>
+			</form>
+			
+			<button class="backbutton" ng-click="cancelResetPassword()" ng-show="resetingPassword"><span class="glyphicon glyphicon-arrow-left"></span></button>
+			<form ng-show="resetingPassword">
+				<p>{{infoMessage}}</p>
+
+				<div class="form-group">
+					<label>Sähköposti:</label>
+					<div class="form-inline">
+						<input required type="email" name="username" ngMaxlength="64" ng-model="data.email" class="form-control" placeholder="Sähköposti"></input>
+						<button class="btn btn-default" ng-click="sendEmailRequest(data)" ng-show="!messageSent">Lähetä sähköposti</button>
+						<button class="btn btn-default" ng-click="alertReasons()" ng-show="messageSent">En saanut sähköpostia</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<label>Sähköpostiin lähetetty koodi:</label>
+					<input required name="securitycode" ngMaxlength="16" ng-model="data.code" class="form-control" placeholder="Sähköpostiin lähetetty koodi"></input>
+				</div>
+				<div class="form-group">
+					<label>Uusi salasana:</label>
+					<input required type="password" name="password" ngMaxlength="64" ng-model="data.password" class="form-control" placeholder="Uusi salasana"></input>
+				</div>
+				<div class="form-group">
+					<label>Uusi salasana uudelleen:</label>
+					<input required type="password" name="password" ng-model="data.passwordCheck" class="form-control" placeholder="Uusi salasana uudelleen"></input></td>
+				</div>
+				<button class="btn btn-default" ng-click="recoverPassword(data)">Vaihda salasana</button>
+			</form>
+		</div>
+
+
+		<!-- CHANGE PASSWORD -->
+		<div class="paasykoecontainer" ng-show="tab==4" ng-cloak>
+			<button class="backbutton" ng-click="setTab(0); setChangePasswordMode(false)"><span class="glyphicon glyphicon-arrow-left"></span></button>
+			<form>
+				<p>{{infoMessage}}</p>
+				<div class="form-group">
+					<label>Vanha salasana</label>
+			    	<input type="password" class="form-control" required placeholder="Vanha salasana" ng-model="data.oldPassword" required>
+				</div>
+				<div class="form-group">
+					<label>Uusi salasana</label>
+					<input type="password" class="form-control" required placeholder="Salasana" ng-model="data.password" required>
+				</div>
+				<div class="form-group">
+					<label>Uusi salasana uudelleen:</label>
+					<input type="password" class="form-control" required placeholder="Salasana uudelleen" ng-model="data.passwordCheck">
+				</div>
+				<button class="btn btn-default" ng-click="changePassword(data)">Vaihda salasanaa</button>
+			</form>
+		</div>
+		<div class="logo hidden-xs hidden-sm"> <img src="pictures/logo.png"></img></div>
+		<div class="signature hidden-xs hidden-sm"><p><em>ohjelmointi/design: Peetu Nuottajärvi</em></p></div>
+	
+		<div class="info" ng-show="!loggedIn">
+            <p><em>Voit valita haluatko harjoitella vain tietyn aihepiirin tai aihepiirien kysymyksiä vai kaikkia käytettävissä olevia kysymyksiä</em></p>
+        </div>
+
+		<div class="info" ng-show="!loggedIn">
+			<p><em>Useimpien kysymyksien jälkeen saat perustellun oikean ratkaisun ja tiedon miltä kirjan sivulta ratkaisu löytyy. Säästät aikaa!</em></p>
+		</div>
+		<div class="info" style="text-align:center" ng-show="!loggedIn">
+			<p class="reference"><em>"Paasykoe.fi on erinomainen apu pääsykoeurakassa!" <br>-Viivi, 19</em></p>
+			<img class="face" src="pictures/viivi.jpg"></img>
+		</div>
+		<div class="info" ng-show="!loggedIn">
+			<p><em>Voit kirjautua palveluun millä tahansa laitteella kuten älypuhelimellasi, tietokoneellasi tai tabletillasi. Sinun ei tarvitse ladata erillistä sovellusta kirjautuaksesi.</em></p>
+		</div>
+		<div class="info" style="text-align:center" ng-show="!loggedIn">
+			<img class="face face2" src="pictures/keni.jpg"></img>
+			<p class="reference"><em>"Paasykoe.fi sivustolla on tosi helppo kerrata opittuja asioita." <br>-Keni, 22</em></p>
+		</div>
+		<div class="info" ng-show="!loggedIn">
+			<p><em>Voit testata osaamistasosi harjoituskokeella! Järjestelmä luo automaattisesti sinulle harjoituskokeen joka vastaa oikeaa pääsykoetta ja laskee saamasi pisteet! Harjoituskokeen kysymykset valikoituvat satunnaisesti kysymyspankista.</em></p>
+		</div>
+		<div class="info" ng-show="!loggedIn">
+			<p><em>Palvelun hinta on 39,90€ ja se sisältää pääsyn palvelun kaikkiin kysymyksiin koko kevään ajaksi aina pääsykoepäivään 7.6.2017 saakka!</em></p>
+		</div>
+		<div class="info" ng-show="!loggedIn">
+			<iframe class="col-xs-12" style="text-align:center;border-width:0px;margin-bottom:20px" width="400" height="300" 
+			 allowfullscreen="allowfullscreen" mozallowfullscreen="mozallowfullscreen" msallowfullscreen="msallowfullscreen" oallowfullscreen="oallowfullscreen" webkitallowfullscreen="webkitallowfullscreen"
+		src="https://www.youtube.com/embed/DfzuRNwOHbc">
+			</iframe>
+		</div>
+		<div class="info" style="text-align:center" ng-class="{'loggedinmargin': loggedIn===true}"> 
+			<button class="btn btn-default" ng-click="givingFeedback = true" ng-show="!givingFeedback">Anna palautetta</button>
+			<form ng-show="givingFeedback">
+			<textarea rows="4" ng-model="feedback.feedback"></textarea><br>
+			<button type="submit" class="btn btn-default" ng-click="sendFeedback(feedback)">Lähetä palaute</button>
+			<button class="btn btn-default" ng-click="givingFeedback = false">Sulje</button>
+		</form>
+		</div>
+
+		
+
+		<div style="margin-bottom: 50px"></div>
+	</div>
+
+	<div class="row">
+	<div class="footer col-xs-12 hidden-xs">
+		<div class="row">
+				<p class="col-xs-3 col-sm-4">&copy; Sippola Enterprises 2017</p>
+				<div class="col-xs-4 hidden-xs hidden-sm text-center">
+				<iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.paasykoe.fi&amp;layout=standard&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=20" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:20px; width: 400px" allowTransparency="true"></iframe>
+				</div>
+				<div class="col-xs-3 col-sm-4 hidden-lg hidden-md text-center">
+				<iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.paasykoe.fi&amp;layout=button&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=20" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:20px; width: 100px" allowTransparency="true"></iframe>
+				</div>
+				<p class="col-xs-5 col-sm-4 text-right">Asiakaspalvelu +358 40 9624 170</p>
+		</div>
+	</div>
+	<div class="mobilefooter visible-xs-inline col-xs-12">
+		<div class="row text-center">
+				<div class="col-xs-12 text-center">
+				<iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.paasykoe.fi&amp;layout=button&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=20" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:20px; width: 100px" allowTransparency="true"></iframe>
+				</div>
+
+				<p class="col-xs-12">&copy; Sippola Enterprises 2016</p>
+				<p class="col-xs-12 text-center">Asiakaspalvelu +358 40 9624 170</p>
+		</div>
+	</div>
+	</div>
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-56187262-1', 'auto');
+	  ga('send', 'pageview');
+	</script>
+        
+</body>
+</html>

@@ -1,0 +1,242 @@
+.paasykoecontainer{
+    margin: auto;
+    margin-top: 60px;
+    max-width: 400px;
+    width: 80%;
+    background-color: #EEE;
+    padding: 10px;
+    margin-bottom: 100px;
+    border-radius: 5px;
+}
+
+.questionimage{
+    width: 100%;
+}
+
+.frontpagebuttons{
+    padding: 0 2px 0 2px !important;
+}
+
+.frontpagebutton{
+    width: 100%;
+}
+
+.exam.clicked{
+    background-color: #c1c61f;
+}
+
+.exam.clicked:hover{
+    background-color: #b6ba4c;
+}
+
+.clicked{
+    background-color: #ED8A8A;
+}
+
+.clicked.correct{
+    background-color: #8AEDA2;
+}
+
+.clicked:hover{
+    background-color: #ED8A8A;
+}
+
+.clicked.correct:hover{
+    background-color: #8AEDA2;
+}
+
+.correctExam{
+    background-color: #8AEDA2 !important;
+}
+
+.background-large{
+    background: url(../pictures/bg.jpg);
+    background-size: 100% 100%;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    left: 0px;
+    top: 0px;
+    opacity: 0.6;
+}
+
+.background-small{
+    position: fixed;
+    background: url(../pictures/bg.jpg) no-repeat center center;
+    content: ' ';
+    background-position: 50% 50%;
+    width: 100%;
+    height: 100%;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    z-index: -1;
+    opacity: 0.6;
+    will-change: transform;
+}
+
+.header{
+    left: 0px;
+    font-family: 'Slabo 27px', serif;
+    font-size: 40px;
+    color: #FFF;
+}
+
+.header.col-sm-12{
+    text-align: center !important;
+    margin-bottom: 50px;
+}
+
+.info{
+    max-width: 400px;
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+    font-family: 'Slabo 27px', serif;
+    font-size: 20px;
+    color: #FFF;
+}
+
+.header p{
+    font-size: 16px !important;
+}
+
+.logo{
+    position: fixed;
+    bottom: 30px;
+    opacity: 0.4;
+}
+
+.signature{
+    position: fixed;
+    bottom: 30px;
+    right: 5px;
+    font-family: 'Slabo 27px', serif;
+}
+
+.footer{
+    position: fixed;
+    width: 100%;
+    bottom: 0px;
+    background-color: #EEE;
+}
+
+.footer p{
+    margin: 0px !important;
+}
+
+.mobilefooter{
+    clear: both;
+    background-color: #EEE;
+}
+
+iframe{
+    margin: 2px 0 2px 0;
+}
+
+body{
+    background-color: #000;
+}
+
+.backbutton{
+    background: none;
+    border: none;
+    color: gray;
+    font-size: 20px;
+    margin-top: 5px;
+    margin-left: -5px;
+}
+
+.wrap{
+    white-space: normal;
+}
+
+.backbutton:hover{
+    color: black;
+}
+
+.buttonmargin{
+    margin-bottom: 5px !important;
+}
+
+.row{
+    width: 100% !important;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.accountManagement{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 10px;
+}
+
+p{
+    white-space: pre-wrap;
+}
+
+label{
+    white-space: pre-wrap;
+}
+
+button:focus {outline:0!important;}
+
+.articleButton{
+    height: 70px;
+    opacity: 0.5;
+    transition: opacity 0.5s ease;
+}
+
+.articleButton:hover{
+    opacity: 1;
+}
+
+.article{
+    border-radius: 5px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    margin-bottom: 40px;
+    margin-right: 60px;
+}
+
+textarea{
+    margin: auto;
+    max-width: 400px;
+    width: 100%;
+    background-color: #EEE;
+    padding: 10px;
+    border-radius: 5px;
+    color: black;
+    font-family: 'Slabo 27px', serif;
+    font-size: 16px;
+    resize: none;
+}
+
+.loggedinmargin{
+    margin-top: 200px;
+}
+
+.face{
+    border-radius:100%;
+    width: 90px;
+    float: right;
+    margin-top: 40px;
+    margin-right: 20px;
+    
+}
+
+.face2{
+    float: left;
+}
+
+.reference{
+    display: inline-block;
+    width: 50%;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+

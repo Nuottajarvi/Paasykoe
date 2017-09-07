@@ -1,0 +1,23 @@
+{
+  "name": "paasykoe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.12.4",
+    "connect-flash": "^0.1.1",
+    "express": "^4.12.3",
+    "express-jwt": "^3.0.1",
+    "express-session": "^1.11.2",
+    "jsonwebtoken": "^5.0.2",
+    "method-override": "^2.3.3",
+    "mysql": "git://github.com/felixge/node-mysql",
+    "nodemailer": "^1.8.0",
+    "request": "^2.67.0"
+  }
+}
